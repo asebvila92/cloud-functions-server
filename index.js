@@ -1,14 +1,15 @@
 const functions = require('firebase-functions');
 const express = require('express');
 const { authMiddleware, logMiddleware } = require('./helpers/middlewares')
-const { authTest, authenticate } = require('./routes/auth');
+const { authenticate } = require('./routes/auth');
 const { getDeliveries, addDelivery, deleteDelivery, getDeliveryByClientName } = require('./routes/deliveries');
+const { areDeliveriesForToday } = require('./firestore/queries')
+const { sendNotifications } = require('./helpers/pushNotifications');
 
 const app = express()
 app.use(logMiddleware);
 
 app.post('/auth/login', (req, res) => authenticate(req.body, res))
-app.get('/auth/test', (req, res) => authTest(res))
 
 app.use(authMiddleware);
 
@@ -20,5 +21,26 @@ app.get('/deliveries/:clientName', (req, res) => getDeliveryByClientName(req, re
 
 exports.server = functions
   .region('southamerica-east1')
-  .https.onRequest(app)
+  .https.onRequest(app)  
 
+exports.handlePushNotifications = functions
+  .region('southamerica-east1')
+  .pubsub.schedule('5 10 * * *') //10:05
+  .timeZone('America/Buenos_Aires')
+  .onRun(async (context) => {
+    await areDeliveriesForToday().then(
+      async (response) => {
+        if(response){
+          await sendNotifications()
+          console.log('We have sent notifications for today')
+          return null
+        }else{
+          console.log('There were no records for today')
+          return null
+        }
+      },
+      (error) => {
+        console.log(error)
+      }
+    )
+});

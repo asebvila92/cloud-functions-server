@@ -46,13 +46,6 @@ function authenticate(data, res) {
 }
 
 
-function authTest(res) {
-  res.send({
-    message: "auth Test Ok"
-  })
-}
-
 module.exports = {
   authenticate,
-  authTest
 }

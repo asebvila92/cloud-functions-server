@@ -108,9 +108,28 @@ function getLogByNameOfClient(clientName) {
         resolve(logs)
       })
       .catch((err)=> {
-        reject()
+        reject(err)
       }
       );
+  })
+}
+
+/*
+  To compare docs in where clause we need to use Timestamp type and give a day of today without hours and 3 ceros. After we
+  need to add 3 hours (10800). Timestamp receive seconds and nanoseconds (last 0)
+*/
+function areDeliveriesForToday() {
+  return new Promise((resolve, reject) => {
+    let db = admin.firestore();
+    db.collection('deliveries')
+    .where('nextDelivery', '==', new admin.firestore.Timestamp(new Date().setHours(0,0,0,0) / 1000 + 10800, 0))
+    .get()
+    .then((snapshot) => {
+      resolve(!snapshot.empty)
+    })
+    .catch((err) => {
+      reject(err)
+    })
   })
 }
 
@@ -157,10 +176,11 @@ function deletePushToken(pushToken) {
 
 module.exports = {
   login,
-  getAllPushTokens,
   getLogs,
   getLogByNameOfClient,
   addLog,
   deleteLog,
+  areDeliveriesForToday,
+  getAllPushTokens,
   deletePushToken
 }
