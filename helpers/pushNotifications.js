@@ -9,7 +9,7 @@ async function getNotifications(){
       notifications.push({
         to: token,
         sound: 'default',
-        body: 'Tienes llamadas para realizar hoy a tus clientes. Entra a la app y fijate',
+        body: 'Tienes LLAMADAS para realizar hoy a tus CLIENTES. Entra a la APP y fijate',
       })
     }
   })
