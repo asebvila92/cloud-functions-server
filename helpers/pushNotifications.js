@@ -9,8 +9,7 @@ async function getNotifications(){
       notifications.push({
         to: token,
         sound: 'default',
-        body: 'test notification',
-        data: { withSome: 'data' }
+        body: 'Tienes llamadas para realizar hoy a tus clientes. Entra a la app y fijate',
       })
     }
   })
