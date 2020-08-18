@@ -9,7 +9,7 @@ function authMiddleware(req, res, next) {
 }
 
 function logMiddleware(req, res, next){
-  console.log(`Route executed: ${req._parsedUrl.path}`);
+  console.log(`Route executed: ${req.method} ${req._parsedUrl.path}`);
   next();
 }
 
