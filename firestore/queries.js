@@ -92,6 +92,21 @@ function deleteLog(logId) {
   })
 }
 
+function updateLog(logId, newData){
+  return new Promise((resolve, reject) => {
+    let db = admin.firestore();
+    db.collection('deliveries')
+      .doc(logId)
+      .update(newData)
+      .then((docRef) => {
+        resolve(docRef);
+      })
+      .catch((err) => {
+        reject(err)
+      })
+  }) 
+}
+
 function getLogByNameOfClient(clientName) {
   return new Promise((resolve, reject) => {
     let db = admin.firestore();
@@ -180,6 +195,7 @@ module.exports = {
   getLogByNameOfClient,
   addLog,
   deleteLog,
+  updateLog,
   areDeliveriesForToday,
   getAllPushTokens,
   deletePushToken

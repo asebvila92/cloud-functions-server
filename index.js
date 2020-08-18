@@ -2,7 +2,7 @@ const functions = require('firebase-functions');
 const express = require('express');
 const { authMiddleware, logMiddleware } = require('./helpers/middlewares')
 const { authenticate } = require('./routes/auth');
-const { getDeliveries, addDelivery, deleteDelivery, getDeliveryByClientName } = require('./routes/deliveries');
+const { getDeliveries, addDelivery, deleteDelivery, getDeliveryByClientName, updateDelivery } = require('./routes/deliveries');
 const { areDeliveriesForToday } = require('./firestore/queries')
 const { sendNotifications } = require('./helpers/pushNotifications');
 
@@ -17,6 +17,7 @@ app.get('/deliveries/all', (req, res) => getDeliveries(res))
 app.post('/deliveries', (req, res) => addDelivery(req, res))
 app.delete('/deliveries/:logId', (req, res) => deleteDelivery(req, res))
 app.get('/deliveries/:clientName', (req, res) => getDeliveryByClientName(req, res))
+app.put('/deliveries/:logId', (req, res) => updateDelivery(req, res))
 
 
 exports.server = functions

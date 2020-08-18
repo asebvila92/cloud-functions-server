@@ -1,4 +1,4 @@
-const { getLogs, addLog, deleteLog, getLogByNameOfClient, } = require('../firestore/queries');
+const { getLogs, addLog, deleteLog, getLogByNameOfClient, updateLog} = require('../firestore/queries');
 
 //--------------------------GET ALL DELIVERIES-----------------------------
 function getDeliveries(res) {
@@ -112,10 +112,37 @@ function getDeliveryByClientName(req, res){
     }
   )
 }
+//-------------------------------UPDATE DELIVERY----------------------------------------
+function updateDelivery(req, res) {
+  let payload = {
+    message: '',
+    data: null
+  }
+  const deliveryId = req.params.logId;
+  const newData = req.body
+  if(newData.client !== '' && newData.nextDelivery !== '' && newData.savedBy !== ''){
+    updateLog(deliveryId, newData).then(
+      (response) => {
+        payload.message = 'Modificacion exitosa';
+        payload.data = response;
+        res.send(payload);
+      },
+      (error) => {
+        payload.message = 'ocurrio un error';
+        res.status(500).send(payload);
+      }
+    )
+  }else{
+    payload.message = 'need client and a next delivery';
+    res.status(400).send(payload);
+  }
+
+}
 
 module.exports = {
   getDeliveries,
   addDelivery,
   deleteDelivery,
+  updateDelivery,
   getDeliveryByClientName,
 }
