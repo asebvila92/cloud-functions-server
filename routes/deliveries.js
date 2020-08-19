@@ -119,7 +119,11 @@ function updateDelivery(req, res) {
     data: null
   }
   const deliveryId = req.params.logId;
-  const newData = req.body
+  const newData = {
+    ...req.body, 
+    lastDelivery: new Date(req.body.lastDelivery),
+    nextDelivery: new Date(req.body.nextDelivery)
+  }
   if(newData.client !== '' && newData.nextDelivery !== '' && newData.savedBy !== ''){
     updateLog(deliveryId, newData).then(
       (response) => {

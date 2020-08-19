@@ -95,11 +95,20 @@ function deleteLog(logId) {
 function updateLog(logId, newData){
   return new Promise((resolve, reject) => {
     let db = admin.firestore();
-    db.collection('deliveries')
-      .doc(logId)
-      .update(newData)
-      .then((docRef) => {
-        resolve(docRef);
+    let deliveries = db.collection('deliveries')
+    
+    deliveries.doc(logId).update(newData).then(
+      () => {
+        deliveries.get().then(
+          (snapshot) => {
+            const docs = snapshot.docs.map((doc) => {
+              const id = doc.id
+              const data = doc.data()
+              return { id, ...data }
+            })
+          const logs = docs.length === 0 ? null : docs;
+          resolve(logs)
+        })
       })
       .catch((err) => {
         reject(err)
