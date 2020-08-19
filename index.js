@@ -30,9 +30,9 @@ exports.handlePushNotifications = functions
   .timeZone('America/Buenos_Aires')
   .onRun(async (context) => {
     await areDeliveriesForToday().then(
-      async (response) => {
+      (response) => {
         if(response){
-          await sendNotifications()
+          sendNotifications()
           console.log('We have sent notifications for today')
           return null
         }else{
