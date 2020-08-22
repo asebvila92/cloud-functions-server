@@ -41,6 +41,19 @@ function login(username, deviceId) {
   }
 )}
 
+function getMessageToClients(){
+  return new Promise((resolve, reject) => {
+    let db = admin.firestore();
+    db.collection('messages')
+    .doc('default')
+    .get()
+    .then(
+      response => resolve(response.data()),
+      error => reject(error)
+    )
+  })
+}
+
 function getLogs() {
   return new Promise((resolve, reject) => {
     let db = admin.firestore();
@@ -200,6 +213,7 @@ function deletePushToken(pushToken) {
 
 module.exports = {
   login,
+  getMessageToClients,
   getLogs,
   getLogByNameOfClient,
   addLog,

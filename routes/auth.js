@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const { generateToken } = require('../helpers/authHelpers');
-const { login } = require('../firestore/queries');
+const { login, getMessageToClients } = require('../firestore/queries');
 
 function authenticate(data, res) {
   const { username, password, deviceId } = data;
@@ -13,10 +13,12 @@ function authenticate(data, res) {
     login(username, deviceId).then(
       (response) => {
         if(response !== null){
-          bcrypt.compare(password, response.password, function (err, result) {
+          bcrypt.compare(password, response.password, async function (err, result) {
             if(result){
+              const clientsMessage = await getMessageToClients()
               payload.token = generateToken(response)
               payload.message = 'Autenticacion exitosa';
+              payload.clientsMessage = clientsMessage;
               payload.userData = {
                 name: response.name, 
                 username: response.username,
