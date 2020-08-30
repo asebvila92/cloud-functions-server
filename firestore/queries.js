@@ -112,7 +112,8 @@ function updateLog(logId, newData){
     
     deliveries.doc(logId).update(newData).then(
       () => {
-        deliveries.get().then(
+        deliveries.orderBy('nextDelivery').get()
+        .then(
           (snapshot) => {
             const docs = snapshot.docs.map((doc) => {
               const id = doc.id
