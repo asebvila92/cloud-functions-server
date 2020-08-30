@@ -29,19 +29,24 @@ exports.handlePushNotifications = functions
   .pubsub.schedule('5 10 * * *') //10:05
   .timeZone('America/Buenos_Aires')
   .onRun(async (context) => {
-    await areDeliveriesForToday().then(
-      (response) => {
-        if(response){
-          sendNotifications()
-          console.log('We have sent notifications for today')
-          return null
-        }else{
-          console.log('There were no records for today')
-          return null
+    try{
+      await areDeliveriesForToday().then(
+        (response) => {
+          if(response){
+            sendNotifications()
+            console.log('We have sent notifications for today')
+            return null
+          }else{
+            console.log('There were no records for today')
+            return null
+          }
+        },
+        (error) => {
+          console.log(error)
         }
-      },
-      (error) => {
-        console.log(error)
-      }
-    )
+      )
+    }
+    catch(err){
+      console.log('ERROR Notifications: ' + err)
+    }
 });
