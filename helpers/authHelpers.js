@@ -4,7 +4,7 @@ const jwtConfig = require('../config/jwtConfig') // this file is not commited
 function generateToken(data) {
   delete data.password;
   return jwt.sign(data, jwtConfig, {
-    expiresIn: 864000 // 10 days
+    expiresIn: 7884000 // 10 days
   });
 }
 
