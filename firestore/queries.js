@@ -211,10 +211,38 @@ function deletePushToken(pushToken) {
   })
 }
 
+function getMessageById(messageId) {
+  return new Promise((resolve, reject) => {
+    let db = admin.firestore();
+    let messagesCollection = db.collection('messages');
+    
+    messagesCollection.doc(messageId).get()
+    .then(
+      response => resolve(response.data()),
+      error => reject(error)
+    )
+  })
+}
+
+function changeMessageById(messageId, text) {
+  return new Promise(async (resolve, reject) =>{
+    let db = admin.firestore();
+    let messagesCollection = db.collection('messages');
+    await messagesCollection.doc(messageId).update({ message: text })
+    messagesCollection.doc(messageId).get()
+    .then(
+      response => resolve(response.data()),
+      error => reject(error)
+    )
+  })
+} 
+
 
 module.exports = {
   login,
   getMessageToClients,
+  changeMessageById,
+  getMessageById,
   getLogs,
   getLogByNameOfClient,
   addLog,

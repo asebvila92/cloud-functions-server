@@ -1,6 +1,6 @@
 const bcrypt = require('bcrypt');
 const { generateToken } = require('../helpers/authHelpers');
-const { login, getMessageToClients } = require('../firestore/queries');
+const { login, getMessageToClients, changeMessageById, getMessageById } = require('../firestore/queries');
 
 function authenticate(data, res) {
   const { username, password, deviceId } = data;
@@ -47,7 +47,59 @@ function authenticate(data, res) {
   }
 }
 
+function getMessage(req, res) {
+  let payload = {
+    message: '',
+    data: ''
+  }
+  const messageId = req.params.messageId;
+
+  getMessageById(messageId).then(
+    (response) => {
+      if(response){
+        payload.message = 'Peticion exitosa';
+        payload.data = response;
+      }else{
+        payload.message = 'No existe el Id de mensaje';
+      }
+      res.send(payload);
+    },
+    (error) => {
+      payload.message = 'ocurrio un error';
+      res.status(500).send(payload);
+    }
+  )
+}
+
+function changeMessage(req, res) {
+  let payload = {
+    message: '',
+    data: null
+  }
+  const messageId = req.params.messageId;
+ 
+  if(req.body.message !== '' && req.body.message.trim() !== ''){
+    changeMessageById(messageId, req.body.message).then(
+      (response) => {
+        payload.message = 'Modificacion exitosa';
+        payload.data = response;
+        res.send(payload);
+      },
+      (error) => {
+        payload.message = 'ocurrio un error';
+        res.status(500).send(payload);
+      }
+    )
+  }else{
+    payload.message = 'need message content';
+    res.status(400).send(payload);
+  }
+
+}
+
 
 module.exports = {
   authenticate,
+  getMessage,
+  changeMessage
 }
